@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) =>({
 
 export default function PredictionSelector(props) {
   const classes = useStyles()
-  const theme = useTheme()
   const { activeScore = 0, setActiveScore, numScores = 1 } = props
 
  const handleNext = () => {
@@ -27,8 +26,6 @@ export default function PredictionSelector(props) {
   const handleBack = () => {
     setActiveScore((prevActiveStep) => prevActiveStep - 1);
   };
-  console.log('activeSCore', activeScore)
-  console.log('numSCores', numScores)
 
   return (
     <MobileStepper

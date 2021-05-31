@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Card, CardActions, CardContent, Typography } from '@material-ui/core'
+import { Card, CardContent, Typography } from '@material-ui/core'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 
 const useStyles = makeStyles((theme) => ({
@@ -46,9 +46,6 @@ function PredictionRow(props) {
 export default function PredictionInfoDisplay(props) {
   const classes = useStyles()
   const { predictions = [], activeScore = 0 } = props
-  console.log(predictions)
-  console.log(activeScore)
-  console.log(predictions[activeScore])
 
   return (
     <Card className={classes.root}>

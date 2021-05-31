@@ -18,12 +18,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Timeline(props) {
   const classes = useStyles()
+  const [filterData, setFilterData] = React.useState({label: '', score: 0})
+
   return (
     <React.Fragment>
-      <FilterBar />
+      <FilterBar filterData={filterData} setFilterData={setFilterData}/>
       <div className={classes.root}>
         <Paper>
-          <EventList />
+          <EventList filterData={filterData}/>
         </Paper>
       </div>
     </React.Fragment>

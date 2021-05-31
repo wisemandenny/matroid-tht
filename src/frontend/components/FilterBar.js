@@ -1,6 +1,6 @@
 import React from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, Typography, InputBase } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, IconButton, InputBase, Chip } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import { HeaderText } from '../../utils/Constants'
 
@@ -57,10 +57,57 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  chipHolder: {
+    display: 'flex',
+    justifyContent: 'left',
+    flexWrap: 'none',
+    listStyle: 'none',
+    padding: theme.spacing(0.5),
+    margin: 0,
+    backgroundColor: theme.palette.primary
+  },
+  chip: {
+    margin: theme.spacing(0.5),
+  }
 }));
 
-export default function FilterBar() {
+export default function FilterBar(props) {
   const classes = useStyles()
+  const { filterData, setFilterData } = props
+  const [searchText, setSearchText] = React.useState('')
+  React.useEffect(() => {
+    setSearchText('')
+  }, [filterData])
+
+  const handleSearchTextChange =  (e) => {
+    setSearchText(e.target.value)
+  }
+
+  const handleFilter = (e) => {
+    if (e.key === 'Enter') {
+      const newFilterData = {label: filterData.label, score: filterData.score}
+      if (!isNaN(e.target.value)) {
+        newFilterData.score = +e.target.value
+      } 
+      else {
+        newFilterData.label = e.target.value.toLowerCase()
+      }
+      setFilterData(newFilterData)
+    }
+  }
+
+  const handleDelete = (filterToDelete) => () => {
+    console.log('filterToDelete', filterToDelete)
+    const newFilterData = {label: filterData.label, score: filterData.score}
+    if (!isNaN(filterToDelete)) {
+      newFilterData.score = 0
+    }
+    else {
+      newFilterData.label = ''
+    }
+    setFilterData(newFilterData)
+  }
+
   return(
     <div className={classes.root}>
       <AppBar className={classes.appBar} position="static">
@@ -68,12 +115,38 @@ export default function FilterBar() {
         <Typography className={classes.title} variant="h6" noWrap>
           {HeaderText}
         </Typography>
+        <ul className={classes.chipHolder}>
+          {(filterData.label.length > 0 && 
+          <li>
+            <Chip
+              className={classes.chip}
+              size='small'
+              label={`label: ${filterData.label}`}
+              onDelete={handleDelete(filterData.label)}
+              />
+          </li>
+          )}
+          {filterData.score > 0 && 
+          <li>
+            <Chip
+              className={classes.chip}
+              size='small'
+              label={`score > ${filterData.score}`}
+              onDelete={handleDelete(filterData.score)}
+              />
+          </li>
+          }
+        </ul>
         <div className={classes.search}>
-          <div className={classes.searchIcon}>
+          <IconButton className={classes.searchIcon} onClick={handleFilter}>
             <SearchIcon />
-          </div>
+          </IconButton>
           <InputBase
             placeholder="Filter..."
+            value={searchText}
+            onChange={handleSearchTextChange}
+            onKeyDown={handleFilter}
+            fullWidth
             classes={{
               root: classes.inputRoot,
               input: classes.inputInput

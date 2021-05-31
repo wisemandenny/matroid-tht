@@ -15,8 +15,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+function filterEvents(events, filterData) {
+  const filteredEvents = events.filter((event) => {
+    let shouldInclude = false
+    event.predictions.forEach((prediction) => {
+      prediction.scores.forEach((score) => {
+        if (!shouldInclude && score.label.toLowerCase().includes(filterData.label) && score.score > filterData.score) {
+          shouldInclude = true
+        }
+      })
+    })
+    return shouldInclude
+  })
+  return filteredEvents
+}
+
 export default function EventList(props) {
   const classes = useStyles()
+  const { filterData } = props
   const [events, setEvents] = React.useState([])
   const [openModalEvent, setOpenModalEvent] = React.useState({})
 
@@ -32,14 +48,15 @@ export default function EventList(props) {
     return (
       <CircularProgress />
     )
-  } else {
+  } 
+  else {
     return (
       <Container className={classes.cardGrid}>
         <Grid 
           container 
           spacing={4}
         >
-          {events.map((event) => (
+          {filterEvents(events, filterData).map((event) => (
             <Grid item key={event.videoStream.concat(event.timestamp)} xs={12} sm={6} md={4}>
               <EventCard event={event} setModalOpenEvent={setOpenModalEvent}/>
             </Grid>
